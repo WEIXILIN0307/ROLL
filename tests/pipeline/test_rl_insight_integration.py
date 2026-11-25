@@ -22,18 +22,23 @@ METRIC = "actor/test_loss"
 RESULT_PREFIX = "ROLL_RL_INSIGHT_EXPERIMENT="
 
 
-def run_driver(root, checkpoint, project, phase):
+def run_driver(root, checkpoint, project, phase, pipeline):
     import ray
     import rl_insight
 
     from roll.configs.base_config import TransferBackendArguments
-    from roll.pipeline.rlvr.rlvr_pipeline import RLVRPipeline
 
-    class MetricDriver(RLVRPipeline):
+    if pipeline == "sft":
+        from roll.pipeline.sft.sft_pipeline import SFTPipeline as Driver
+    else:
+        from roll.pipeline.rlvr.rlvr_pipeline import RLVRPipeline as Driver
+
+    class MetricDriver(Driver):
         def _initialize(self):
             # No model workers in the CPU integration.
             self.generate_schedulers = {}
             self.val_dataset = None
+            self.dataloader = []
 
         def _run(self):
             if phase in ("replay-only", "interrupted"):
@@ -60,6 +65,7 @@ def run_driver(root, checkpoint, project, phase):
         auto_resume=False,
         async_pipeline=False,
         max_steps=5 if phase == "resume" else 3,
+        sft_train=SimpleNamespace(training_args=SimpleNamespace(num_train_epochs=1)),
     )
     ray.init(address="local", num_cpus=2, num_gpus=0, include_dashboard=False, object_store_memory=96 * 1024**2)
     try:
@@ -123,7 +129,8 @@ def wait_for_metrics(tempo_url, project, experiment, expected):
 
 
 @pytest.mark.skipif(not os.environ.get("ROLL_TEST_TEMPO_URL"), reason="Requires a local RL-Insight/Tempo stack")
-def test_checkpoint_resume_preserves_steps_and_flushes_tail(tmp_path):
+@pytest.mark.parametrize("pipeline", ["rlvr", "sft"])
+def test_checkpoint_resume_preserves_steps_and_flushes_tail(tmp_path, pipeline):
     project = f"roll-it-{uuid4().hex}"
     tempo_url = os.environ["ROLL_TEST_TEMPO_URL"]
     checkpoint = tmp_path / "train" / "pipeline" / "checkpoint-2"
@@ -131,7 +138,7 @@ def test_checkpoint_resume_preserves_steps_and_flushes_tail(tmp_path):
     for phase, last_step in (("train", 2), ("resume", 4), ("replay-only", 2), ("interrupted", 2)):
         root = tmp_path / phase
         output = subprocess.run(
-            [sys.executable, __file__, str(root), str(checkpoint), project, phase],
+            [sys.executable, __file__, str(root), str(checkpoint), project, phase, pipeline],
             env={**os.environ, "CUDA_VISIBLE_DEVICES": "", "ROLL_LOG_DIR": str(root / "logs")},
             text=True,
             capture_output=True,

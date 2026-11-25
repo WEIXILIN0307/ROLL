@@ -513,18 +513,6 @@ class RLVRPipeline(BasePipeline):
             self._finish_rl_insight_tracker()
         logger.info("pipeline complete!")
 
-    def _finish_rl_insight_tracker(self):
-        if getattr(self, "tracker", None) is None or self.pipeline_config.track_with != "rl_insight":
-            return
-        # A failed or replay-only run may never reach do_checkpoint().
-        try:
-            self._wait_for_resume_metrics()
-        finally:
-            try:
-                self.tracker.finish()
-            except Exception:
-                logger.exception("Failed to finish the RL-Insight tracker")
-
     def _run(self):
         # 计算tokens per second 系统吞吐
 

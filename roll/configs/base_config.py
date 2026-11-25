@@ -134,7 +134,7 @@ class BaseConfig(ScheduleConfig):
     )
     track_with: str = field(
         default="tensorboard",
-        metadata={"help": "The tracker backend, e.g. tensorboard, wandb, stdout, swanlab, or rl_insight (RLVR driver)."}
+        metadata={"help": "The tracker backend, e.g. tensorboard, wandb, stdout, swanlab, or rl_insight (RLVR and SFT)."}
     )
     tracker_kwargs: dict = field(
         default_factory=dict,

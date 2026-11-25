@@ -33,8 +33,7 @@ class BasePipeline:
     def __init__(self, pipeline_config, *, supports_rl_insight=False):
         if pipeline_config.track_with == "rl_insight" and not supports_rl_insight:
             raise ValueError(
-                f"track_with=rl_insight is not supported by {type(self).__name__}. "
-                "Use the standard text RLVR training entry point."
+                f"track_with=rl_insight is not supported by {type(self).__name__}. See the Tracker & Metrics guide."
             )
         set_seed(seed=pipeline_config.seed)
         self.pipeline_config = pipeline_config
@@ -198,6 +197,18 @@ class BasePipeline:
             except Exception:
                 logger.exception("Failed to replay checkpoint metrics")
         self.resume_futures.clear()
+
+    def _finish_rl_insight_tracker(self):
+        if getattr(self, "tracker", None) is None or self.pipeline_config.track_with != "rl_insight":
+            return
+        # A failed or replay-only run may never reach do_checkpoint().
+        try:
+            self._wait_for_resume_metrics()
+        finally:
+            try:
+                self.tracker.finish()
+            except Exception:
+                logger.exception("Failed to finish the RL-Insight tracker")
 
     def _cleanup_old_checkpoints(self):
         """Remove old checkpoints if max_ckpt_to_keep is set."""

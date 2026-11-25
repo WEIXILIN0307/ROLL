@@ -83,9 +83,14 @@ def get_encode_function(template_name, tokenizer, prompt_key, query_key, respons
 
 class SFTPipeline(BasePipeline):
     def __init__(self, pipeline_config: SFTConfig):
-        super().__init__(pipeline_config)
-        self.pipeline_config = pipeline_config
+        try:
+            super().__init__(pipeline_config, supports_rl_insight=True)
+            self._initialize()
+        except BaseException:
+            self._finish_rl_insight_tracker()
+            raise
 
+    def _initialize(self):
         self.tokenizer = default_tokenizer_provider(self.pipeline_config.sft_train.model_args)
         self.tokenizer.padding_side = "right" # padding should be on right in sft
 
@@ -180,6 +185,13 @@ class SFTPipeline(BasePipeline):
 
     @torch.no_grad()
     def run(self):
+        try:
+            self._run()
+        finally:
+            self._finish_rl_insight_tracker()
+        logger.info("pipeline complete!")
+
+    def _run(self):
         global_step = 0
         metrics_mgr = MetricsManager()
         num_epochs = self.pipeline_config.sft_train.training_args.num_train_epochs
@@ -240,8 +252,6 @@ class SFTPipeline(BasePipeline):
                 logger.info(f"pipeline step {global_step} finished...")
 
                 global_step += 1
-
-        logger.info("pipeline complete!")
 
     @torch.no_grad()
     def val(self):
