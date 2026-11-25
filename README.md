@@ -89,8 +89,8 @@ Leveraging a multi-role distributed architecture with Ray for flexible resource 
 
 ### Optional RL-Insight tracker
 
-Supported by standard text RLVR (`examples/start_rlvr_pipeline.py`) and SFT
-(`examples/start_sft_pipeline.py`).
+Supported by standard text RLVR (`examples/start_rlvr_pipeline.py`), SFT
+(`examples/start_sft_pipeline.py`), and vision RLVR (`examples/start_rlvr_vl_pipeline.py`).
 TensorBoard remains the default. Choosing RL-Insight replaces it for this run.
 
 Install an SDK with `metric_log` and run a matching RL-Insight server with Tempo enabled.

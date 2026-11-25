@@ -151,9 +151,15 @@ class FiltDataRolloutLoop(UserDefinedRolloutLoop):
 
 class RLVRVLMPipeline(BasePipeline):
     def __init__(self, pipeline_config: RLVRConfig):
-        super().__init__(pipeline_config)
-        self.pipeline_config = pipeline_config
-        pipeline_config.user_defined_rollout_loop_cls = f"{self.__class__.__module__}.FiltDataRolloutLoop"
+        try:
+            super().__init__(pipeline_config, supports_rl_insight=True)
+            self._initialize()
+        except BaseException:
+            self._finish_rl_insight_tracker()
+            raise
+
+    def _initialize(self):
+        self.pipeline_config.user_defined_rollout_loop_cls = f"{self.__class__.__module__}.FiltDataRolloutLoop"
 
         self.processor = default_processor_provider(self.pipeline_config.actor_train.model_args)
         self.tokenizer = self.processor.tokenizer
@@ -424,6 +430,13 @@ class RLVRVLMPipeline(BasePipeline):
 
     @torch.no_grad()
     def run(self):
+        try:
+            self._run()
+        finally:
+            self._finish_rl_insight_tracker()
+        logger.info("pipeline complete!")
+
+    def _run(self):
         metrics_mgr = MetricsManager()
         tracer = get_tracer("driver")
 
@@ -760,8 +773,6 @@ class RLVRVLMPipeline(BasePipeline):
         ray.get([scheduler.shutdown.remote() for scheduler in self.generate_schedulers.values()])
         if self.val_dataset:
             ray.get(self.val_generate_scheduler.shutdown.remote())
-
-        logger.info("pipeline complete!")
 
     @torch.no_grad()
     def val(self, global_step):

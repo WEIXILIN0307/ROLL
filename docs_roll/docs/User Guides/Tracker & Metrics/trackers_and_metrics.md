@@ -69,10 +69,11 @@ tracker_kwargs:
   gpu_log_interval: 2
 ```
 
-## RL-Insight for text training
+## RL-Insight for training
 
 `track_with: rl_insight` selects the driver metric backend for
-`examples/start_rlvr_pipeline.py` (text RLVR) and `examples/start_sft_pipeline.py` (SFT).
+`examples/start_rlvr_pipeline.py` (text RLVR), `examples/start_sft_pipeline.py` (SFT),
+and `examples/start_rlvr_vl_pipeline.py` (vision RLVR).
 It replaces TensorBoard for this run.
 TensorBoard remains the default and does not need the SDK.
 

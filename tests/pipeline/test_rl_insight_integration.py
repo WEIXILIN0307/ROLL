@@ -30,6 +30,8 @@ def run_driver(root, checkpoint, project, phase, pipeline):
 
     if pipeline == "sft":
         from roll.pipeline.sft.sft_pipeline import SFTPipeline as Driver
+    elif pipeline == "vision":
+        from roll.pipeline.rlvr.rlvr_vlm_pipeline import RLVRVLMPipeline as Driver
     else:
         from roll.pipeline.rlvr.rlvr_pipeline import RLVRPipeline as Driver
 
@@ -129,7 +131,7 @@ def wait_for_metrics(tempo_url, project, experiment, expected):
 
 
 @pytest.mark.skipif(not os.environ.get("ROLL_TEST_TEMPO_URL"), reason="Requires a local RL-Insight/Tempo stack")
-@pytest.mark.parametrize("pipeline", ["rlvr", "sft"])
+@pytest.mark.parametrize("pipeline", ["rlvr", "sft", "vision"])
 def test_checkpoint_resume_preserves_steps_and_flushes_tail(tmp_path, pipeline):
     project = f"roll-it-{uuid4().hex}"
     tempo_url = os.environ["ROLL_TEST_TEMPO_URL"]
