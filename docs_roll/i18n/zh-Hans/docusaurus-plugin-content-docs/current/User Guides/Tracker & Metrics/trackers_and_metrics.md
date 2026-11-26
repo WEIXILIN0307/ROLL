@@ -51,8 +51,8 @@ track_with: stdout
 
 ## 文本训练使用 RL-Insight
 
-`track_with: rl_insight` 为标准文本 RLVR 入口
-`examples/start_rlvr_pipeline.py` 和 SFT 入口 `examples/start_sft_pipeline.py` 切换 driver 指标后端，不会同时写入 TensorBoard。
+`track_with: rl_insight` 为标准文本 RLVR 入口 `examples/start_rlvr_pipeline.py`
+和 SFT 入口 `examples/start_sft_pipeline.py` 切换 driver 指标后端，不会同时写入 TensorBoard。
 默认仍为 TensorBoard，不依赖 RL-Insight SDK。
 
 使用包含 `metric_log` 的 SDK 和匹配的服务，启用 Tempo，将

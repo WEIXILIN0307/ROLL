@@ -83,7 +83,7 @@ def run_driver(root, checkpoint, project, phase, pipeline):
             if phase == "interrupted":
                 error = KeyboardInterrupt("interrupted before the first new step")
                 with (
-                    patch("roll.pipeline.rlvr.rlvr_pipeline.MetricsManager", side_effect=error),
+                    patch(f"{Driver.__module__}.MetricsManager", side_effect=error),
                     pytest.raises(KeyboardInterrupt) as raised,
                 ):
                     driver.run()
