@@ -13,6 +13,7 @@ from roll.distributed.strategy.strategy import InferenceStrategy, TrainStrategy
 from roll.utils.functionals import reduce_metrics
 from roll.models.model_providers import default_actor_model_provider
 from roll.platforms import current_platform
+from roll.utils.checkpoint_manager import download_model
 
 
 class SFTWorker(Worker):
@@ -26,6 +27,10 @@ class SFTWorker(Worker):
         super().initialize(pipeline_config)
         self.strategy = create_strategy(worker=self)
         self.strategy.initialize(model_provider=default_actor_model_provider)
+        checkpoint = self.pipeline_config.resume_from_checkpoint
+        if isinstance(checkpoint, str) and checkpoint:
+            load_dir = download_model(checkpoint)
+            self.strategy.load_checkpoint(load_dir=load_dir, tag="checkpoint", required=True)
         self.logger.info(f"{self.worker_name} initialized")
 
     @register(Dispatch.DP_MP_COMPUTE, clear_cache=False, prefetch=True)

@@ -1747,7 +1747,7 @@ class FSDP2InferStrategy(FSDP2StrategyBase):
 class FSDP2TrainStrategy(FSDP2InferStrategy, TrainStrategy):
     strategy_name = "fsdp2_train"
 
-    def load_checkpoint(self, load_dir, tag="checkpoint", **kwargs):
+    def load_checkpoint(self, load_dir, tag="checkpoint", *, required=False, **kwargs):
         """
         Load checkpoint from a shared directory where all ranks' sharded checkpoints are stored.
 
@@ -1756,8 +1756,16 @@ class FSDP2TrainStrategy(FSDP2InferStrategy, TrainStrategy):
         logger.info(f"load_dir: {load_dir}")
 
         dcp_checkpoint_dir = self._get_dcp_checkpoint_dir(load_dir)
-        used_dcp = False
-        if os.path.isdir(dcp_checkpoint_dir):
+        checkpoint_exists = os.path.isdir(dcp_checkpoint_dir)
+        if required:
+            if dist.is_initialized():
+                # No rank should enter DCP while another rank rejects a missing checkpoint.
+                visible = torch.tensor(int(checkpoint_exists), device="cpu")
+                dist.all_reduce(visible, op=dist.ReduceOp.MIN, group=self._get_dcp_process_group())
+                checkpoint_exists = bool(visible.item())
+            if not checkpoint_exists:
+                raise FileNotFoundError(f"FSDP2 training checkpoint is not visible on every rank: {dcp_checkpoint_dir}")
+        if checkpoint_exists:
             if dist.is_initialized():
                 dist.barrier()
 
@@ -1765,7 +1773,6 @@ class FSDP2TrainStrategy(FSDP2InferStrategy, TrainStrategy):
                 checkpoint_dir=dcp_checkpoint_dir,
             )
             self._load_rank_rng_state(load_dir)
-            used_dcp = True
             logger.info(f"Loaded DCP checkpoint from {dcp_checkpoint_dir}")
             if dist.is_initialized():
                 dist.barrier()

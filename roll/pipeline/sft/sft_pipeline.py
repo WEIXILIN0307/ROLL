@@ -1,3 +1,4 @@
+from copy import copy
 from typing import Any
 
 import datasets
@@ -144,7 +145,14 @@ class SFTPipeline(BasePipeline):
             resource_manager=self.resource_manager,
             worker_config=self.pipeline_config.sft_train
         )
-        ray.get(self.sft_train.initialize(pipeline_config=self.pipeline_config, blocking=False))
+        worker_config = self.pipeline_config
+        if worker_config.resume_from_checkpoint or worker_config.auto_resume:
+            # Workers resolve the selected URI locally, but must not choose a
+            # newer checkpoint than the one the driver used for WorkerState.
+            worker_config = copy(worker_config)
+            worker_config.resume_from_checkpoint = self._resume_checkpoint_uri or False
+            worker_config.auto_resume = False
+        ray.get(self.sft_train.initialize(pipeline_config=worker_config, blocking=False))
 
         dp_size = self.sft_train.dp_size
         ga_steps = self.pipeline_config.sft_train.training_args.gradient_accumulation_steps

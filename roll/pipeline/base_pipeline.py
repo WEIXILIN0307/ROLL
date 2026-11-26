@@ -68,6 +68,7 @@ class BasePipeline:
         init_transfer_backend(pipeline_config.transfer_backend)
 
         self.resume_from_checkpoint = False
+        self._resume_checkpoint_uri = None
         self.executor: futures.ThreadPoolExecutor = futures.ThreadPoolExecutor(max_workers=5)
 
         if self.pipeline_config.resume_from_checkpoint or self.pipeline_config.auto_resume:
@@ -78,6 +79,7 @@ class BasePipeline:
                 ckpt_uri = self.pipeline_config.resume_from_checkpoint
             if ckpt_uri:
                 self.resume_from_checkpoint = download_model(ckpt_uri)
+                self._resume_checkpoint_uri = ckpt_uri
             else:
                 self.resume_from_checkpoint = False
 
