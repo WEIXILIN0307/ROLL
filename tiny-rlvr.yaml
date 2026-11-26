@@ -1,0 +1,123 @@
+hydra:
+  run:
+    dir: .
+  output_subdir: null
+exp_name: tiny-rlvr
+seed: 123
+logging_dir: __RUN__/logs
+output_dir: __RUN__/output
+system_envs:
+  RAY_PROFILING: '0'
+  VLLM_NO_USAGE_STATS: '1'
+  VLLM_ENABLE_V1_MULTIPROCESSING: '0'
+checkpoint_config:
+  type: file_system
+  output_dir: __RUN__/checkpoints
+  async_upload: false
+track_with: rl_insight
+tracker_kwargs:
+  project: roll-529-draft-bf16
+  name: tiny-rlvr
+num_gpus_per_node: 1
+max_steps: 3
+save_steps: 2
+logging_steps: 1
+eval_steps: 10
+resume_from_checkpoint: false
+rollout_batch_size: 2
+prompt_length: 64
+response_length: 12
+num_return_sequences_in_group: 2
+ppo_epochs: 1
+adv_estimator: reinforce
+value_clip: 0.5
+reward_clip: 10
+advantage_clip: 2.0
+dual_clip_loss: true
+norm_mean_type: null
+norm_std_type: null
+max_len_mask: false
+difficulty_mask: false
+difficulty_low_threshold: 0.1
+difficulty_high_threshold: 0.95
+error_max_len_clip: false
+difficulty_loss_weight: false
+length_loss_weight: false
+add_token_level_kl: false
+whiten_advantages: false
+pretrain: __RUN__/tiny-qwen2
+actor_train:
+  system_envs:
+    PYTORCH_CUDA_ALLOC_CONF: expandable_segments:False
+  model_args:
+    model_name_or_path: __RUN__/tiny-qwen2
+    attn_implementation: sdpa
+    dtype: bf16
+    disable_gradient_checkpointing: true
+  training_args:
+    learning_rate: 0.0003
+    weight_decay: 0.01
+    per_device_train_batch_size: 1
+    gradient_accumulation_steps: 4
+    warmup_steps: 0
+    num_train_epochs: 1
+  data_args:
+    template: qwen2_5
+    messages: messages
+    file_name:
+    - __RUN__/tiny-math.jsonl
+    domain_interleave_probs:
+      gsm8k: 1.0
+    preprocessing_num_workers: 1
+  strategy_args:
+    strategy_name: fsdp2_train
+    strategy_config:
+      enable_mix_precision: true
+      fsdp_size: 1
+      reshard_after_forward: true
+      offload_policy: false
+  device_mapping: list(range(1))
+  infer_batch_size: 1
+actor_infer:
+  model_args:
+    model_name_or_path: __RUN__/tiny-qwen2
+    attn_implementation: sdpa
+    dtype: bf16
+    disable_gradient_checkpointing: true
+  generating_args:
+    max_new_tokens: 12
+    top_p: 0.99
+    top_k: 10
+    num_beams: 1
+    temperature: 0.99
+    num_return_sequences: 2
+  data_args:
+    template: qwen2_5
+  strategy_args:
+    strategy_name: vllm
+    strategy_config:
+      gpu_memory_utilization: 0.14
+      kv_cache_memory_bytes: 268435456
+      enforce_eager: true
+      block_size: 16
+      max_model_len: 96
+      tensor_parallel_size: 1
+      max_num_seqs: 4
+      load_format: dummy
+  device_mapping: list(range(1))
+  infer_batch_size: 1
+rewards:
+  gsm8k:
+    worker_cls: roll.pipeline.rlvr.rewards.gsm8k_math_reward_worker.GSM8KMathRewardWorker
+    tag_included:
+    - gsm8k
+    model_args:
+      model_name_or_path: __RUN__/tiny-qwen2
+    world_size: 1
+    infer_batch_size: 1
+enable_reference: false
+transfer_backend:
+  backend_name: null
+rpc_timeout: 90
+init_kl_coef: 0.0
+use_kl_loss: false

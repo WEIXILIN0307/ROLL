@@ -1,0 +1,312 @@
+{
+  "id": null,
+  "uid": "roll-rlvr-resume",
+  "schemaVersion": 41,
+  "version": 1,
+  "title": "ROLL text RLVR \u2022 Checkpoint restart",
+  "timezone": "utc",
+  "tags": [
+    "roll",
+    "rl-insight",
+    "rlvr"
+  ],
+  "refresh": "",
+  "panels": [
+    {
+      "id": 1,
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 3
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "**X axis \u00b7 original ROLL training step**\n\nFor the checkpoint-2 acceptance run, steps **0\u20132** are replayed and steps **3\u20134** are new. The panels query RL-Insight's Tempo spans for the selected execution."
+      }
+    },
+    {
+      "id": 2,
+      "type": "barchart",
+      "title": "Rollout generation time",
+      "description": "Tempo metric_log spans for time/step_generate. The X axis is the original ROLL global_step.",
+      "datasource": {
+        "type": "tempo",
+        "uid": "tempo"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 3,
+        "w": 12,
+        "h": 14
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "tempo",
+            "uid": "tempo"
+          },
+          "refId": "A",
+          "queryType": "traceql",
+          "tableType": "spans",
+          "query": "{resource.service.name = \"rl_insight_monitor\" && span.\"monitor.trace_segment\" = \"metric_log\" && span.project =~ `^${project:regex}$` && span.experiment_name =~ `^${execution:regex}$` && span.\"metric.name\" = \"time/step_generate\" && span.global_step != nil && span.\"metric.value\" != nil} | select(span.global_step, span.\"metric.value\")",
+          "limit": 1000,
+          "spss": 100
+        }
+      ],
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "global_step",
+                "destinationType": "number"
+              },
+              {
+                "targetField": "metric.value",
+                "destinationType": "number"
+              }
+            ]
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "global_step",
+                "desc": false
+              }
+            ]
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "global_step",
+                "destinationType": "string"
+              }
+            ]
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "^(global_step|metric\\.value)$"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "displayName": "time/step_generate",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 0,
+            "fillOpacity": 76
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "global_step"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "displayName",
+                "value": "global_step"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "xField": "global_step",
+        "orientation": "vertical",
+        "groupWidth": 0.62,
+        "barWidth": 0.83,
+        "tooltip": {
+          "mode": "single"
+        },
+        "legend": {
+          "showLegend": true,
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": "barchart",
+      "title": "Actor learning rate",
+      "description": "Tempo metric_log spans for actor/lr. The X axis is the original ROLL global_step.",
+      "datasource": {
+        "type": "tempo",
+        "uid": "tempo"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 3,
+        "w": 12,
+        "h": 14
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "tempo",
+            "uid": "tempo"
+          },
+          "refId": "A",
+          "queryType": "traceql",
+          "tableType": "spans",
+          "query": "{resource.service.name = \"rl_insight_monitor\" && span.\"monitor.trace_segment\" = \"metric_log\" && span.project =~ `^${project:regex}$` && span.experiment_name =~ `^${execution:regex}$` && span.\"metric.name\" = \"actor/lr\" && span.global_step != nil && span.\"metric.value\" != nil} | select(span.global_step, span.\"metric.value\")",
+          "limit": 1000,
+          "spss": 100
+        }
+      ],
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "global_step",
+                "destinationType": "number"
+              },
+              {
+                "targetField": "metric.value",
+                "destinationType": "number"
+              }
+            ]
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "global_step",
+                "desc": false
+              }
+            ]
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "global_step",
+                "destinationType": "string"
+              }
+            ]
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "^(global_step|metric\\.value)$"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "displayName": "actor/lr",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "lineWidth": 0,
+            "fillOpacity": 76
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "global_step"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "displayName",
+                "value": "global_step"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "xField": "global_step",
+        "orientation": "vertical",
+        "groupWidth": 0.62,
+        "barWidth": 0.83,
+        "tooltip": {
+          "mode": "single"
+        },
+        "legend": {
+          "showLegend": true,
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      }
+    }
+  ],
+  "time": {
+    "from": "2026-11-26T11:15:12.278991Z",
+    "to": "2026-11-26T11:16:48.146648Z"
+  },
+  "templating": {
+    "list": [
+      {
+        "type": "textbox",
+        "name": "project",
+        "label": "Project",
+        "query": "roll-529-draft-bf16",
+        "current": {
+          "text": "roll-529-draft-bf16",
+          "value": "roll-529-draft-bf16",
+          "selected": true
+        }
+      },
+      {
+        "type": "textbox",
+        "name": "execution",
+        "label": "Execution",
+        "query": "tiny-rlvr-20261126-111524-84b5f0a8",
+        "current": {
+          "text": "tiny-rlvr-20261126-111524-84b5f0a8",
+          "value": "tiny-rlvr-20261126-111524-84b5f0a8",
+          "selected": true
+        }
+      }
+    ]
+  }
+}
