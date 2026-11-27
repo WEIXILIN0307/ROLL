@@ -1,0 +1,129 @@
+actor_infer:
+  data_args:
+    template: qwen2_5
+  device_mapping: list(range(1))
+  generating_args:
+    max_new_tokens: 12
+    num_beams: 1
+    num_return_sequences: 2
+    temperature: 0.99
+    top_k: 10
+    top_p: 0.99
+  infer_batch_size: 1
+  model_args:
+    attn_implementation: sdpa
+    disable_gradient_checkpointing: true
+    dtype: bf16
+    model_name_or_path: __RUN__/model
+  strategy_args:
+    strategy_config:
+      block_size: 16
+      enforce_eager: true
+      gpu_memory_utilization: 0.14
+      kv_cache_memory_bytes: 268435456
+      limit_mm_per_prompt:
+        image: 1
+        video: 0
+      load_format: dummy
+      max_model_len: 160
+      max_num_batched_tokens: 320
+      max_num_seqs: 4
+      tensor_parallel_size: 1
+    strategy_name: vllm
+actor_train:
+  data_args:
+    domain_interleave_probs:
+      math: 1.0
+    file_name:
+    - __RUN__/samples.jsonl
+    image_max_pixels: 3136
+    image_min_pixels: 3136
+    messages: prompt
+    preprocessing_num_workers: 1
+  device_mapping: list(range(1))
+  infer_batch_size: 1
+  model_args:
+    attn_implementation: sdpa
+    disable_gradient_checkpointing: true
+    dtype: bf16
+    freeze_module_prefix: model.visual
+    model_name_or_path: __RUN__/model
+  strategy_args:
+    strategy_config:
+      enable_mix_precision: true
+      fsdp_size: 1
+      offload_policy: false
+      reshard_after_forward: true
+    strategy_name: fsdp2_train
+  system_envs:
+    PYTORCH_CUDA_ALLOC_CONF: expandable_segments:False
+  training_args:
+    gradient_accumulation_steps: 4
+    learning_rate: 0.0003
+    num_train_epochs: 1
+    per_device_train_batch_size: 1
+    warmup_steps: 0
+    weight_decay: 0.01
+add_token_level_kl: false
+adv_estimator: reinforce
+advantage_clip: 2.0
+checkpoint_config:
+  async_upload: false
+  output_dir: __RUN__/checkpoints
+  type: file_system
+difficulty_high_threshold: 0.95
+difficulty_loss_weight: false
+difficulty_low_threshold: 0.1
+difficulty_mask: false
+dual_clip_loss: true
+enable_reference: false
+error_max_len_clip: false
+eval_steps: 10
+exp_name: insight-tiny-vlm
+hydra:
+  output_subdir: null
+  run:
+    dir: .
+init_kl_coef: 0.0
+length_loss_weight: false
+logging_dir: __RUN__/logs
+logging_steps: 1
+max_len_mask: false
+max_steps: 3
+norm_mean_type: null
+norm_std_type: null
+num_gpus_per_node: 1
+num_return_sequences_in_group: 2
+output_dir: __RUN__/work
+ppo_epochs: 1
+pretrain: __RUN__/model
+prompt_length: 128
+response_length: 12
+resume_from_checkpoint: false
+reward_clip: 10
+rewards:
+  math:
+    infer_batch_size: 1
+    model_args:
+      model_name_or_path: __RUN__/model
+    tag_included:
+    - mm_math
+    worker_cls: roll.pipeline.rlvr.rewards.math_rule_reward_worker.MathRuleRewardWorker
+    world_size: 1
+rollout_batch_size: 2
+rpc_timeout: 90
+save_steps: 2
+seed: 123
+system_envs:
+  RAY_PROFILING: '0'
+  VLLM_ENABLE_V1_MULTIPROCESSING: '0'
+  VLLM_NO_USAGE_STATS: '1'
+track_with: rl_insight
+tracker_kwargs:
+  name: tiny-vlm
+  project: roll-followups-parity-vlm
+transfer_backend:
+  backend_name: null
+use_kl_loss: false
+value_clip: 0.5
+whiten_advantages: false

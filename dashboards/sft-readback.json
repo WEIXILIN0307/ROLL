@@ -1,0 +1,148 @@
+{
+  "roll_commit": "31a1730114751f314611dc0b7efb8b0fc57a5ba8",
+  "project": "roll-followups-parity-sft",
+  "execution": "tiny-sft-20261126-123048-df318d50",
+  "checkpoint_step": 2,
+  "matched_counts": [
+    {
+      "phase": "first",
+      "execution": "tiny-sft-20261126-122956-083cda9e",
+      "step": 0,
+      "metric_count": 12
+    },
+    {
+      "phase": "first",
+      "execution": "tiny-sft-20261126-122956-083cda9e",
+      "step": 1,
+      "metric_count": 12
+    },
+    {
+      "phase": "first",
+      "execution": "tiny-sft-20261126-122956-083cda9e",
+      "step": 2,
+      "metric_count": 17
+    },
+    {
+      "phase": "resumed",
+      "execution": "tiny-sft-20261126-123048-df318d50",
+      "step": 0,
+      "metric_count": 12
+    },
+    {
+      "phase": "resumed",
+      "execution": "tiny-sft-20261126-123048-df318d50",
+      "step": 1,
+      "metric_count": 12
+    },
+    {
+      "phase": "resumed",
+      "execution": "tiny-sft-20261126-123048-df318d50",
+      "step": 2,
+      "metric_count": 17
+    },
+    {
+      "phase": "resumed",
+      "execution": "tiny-sft-20261126-123048-df318d50",
+      "step": 3,
+      "metric_count": 12
+    },
+    {
+      "phase": "resumed",
+      "execution": "tiny-sft-20261126-123048-df318d50",
+      "step": 4,
+      "metric_count": 17
+    }
+  ],
+  "series": [
+    {
+      "step": 0,
+      "origin": "replayed",
+      "metric": "sft_train/loss",
+      "value": 12.0625,
+      "checkpoint_value": 12.0625,
+      "tempo_trace_id": "670a293f5949b580195916fb6b11db56",
+      "observed_at_utc": "2026-11-26T12:30:51.281328+00:00"
+    },
+    {
+      "step": 0,
+      "origin": "replayed",
+      "metric": "time/step_train",
+      "value": 0.9864854188635945,
+      "checkpoint_value": 0.9864854188635945,
+      "tempo_trace_id": "82a886ed06a9be3ff2ede0b4b43bdcaa",
+      "observed_at_utc": "2026-11-26T12:30:51.282501+00:00"
+    },
+    {
+      "step": 1,
+      "origin": "replayed",
+      "metric": "sft_train/loss",
+      "value": 12.03125,
+      "checkpoint_value": 12.03125,
+      "tempo_trace_id": "da551d4ff10e3f2382c56870d658dfd7",
+      "observed_at_utc": "2026-11-26T12:30:51.285422+00:00"
+    },
+    {
+      "step": 1,
+      "origin": "replayed",
+      "metric": "time/step_train",
+      "value": 0.0700706229545176,
+      "checkpoint_value": 0.0700706229545176,
+      "tempo_trace_id": "65b540e0a55026a9685e11351ac86b3b",
+      "observed_at_utc": "2026-11-26T12:30:51.288285+00:00"
+    },
+    {
+      "step": 2,
+      "origin": "replayed",
+      "metric": "sft_train/loss",
+      "value": 12,
+      "checkpoint_value": 12.0,
+      "tempo_trace_id": "fe33d22c608a3ffa81933468a9ccdcfb",
+      "observed_at_utc": "2026-11-26T12:30:51.290987+00:00"
+    },
+    {
+      "step": 2,
+      "origin": "replayed",
+      "metric": "time/step_train",
+      "value": 0.0731934942305088,
+      "checkpoint_value": 0.0731934942305088,
+      "tempo_trace_id": "627f675a772a08b562cae24cddd7cd8d",
+      "observed_at_utc": "2026-11-26T12:30:51.293039+00:00"
+    },
+    {
+      "step": 3,
+      "origin": "new",
+      "metric": "sft_train/loss",
+      "value": 11.75,
+      "checkpoint_value": 11.75,
+      "tempo_trace_id": "cab7e22f8102a63b6e8cbbd057a2602b",
+      "observed_at_utc": "2026-11-26T12:31:06.055175+00:00"
+    },
+    {
+      "step": 3,
+      "origin": "new",
+      "metric": "time/step_train",
+      "value": 0.8467730148695409,
+      "checkpoint_value": 0.8467730148695409,
+      "tempo_trace_id": "1e90ba78d2f3a9c8a6d9728d74070bf0",
+      "observed_at_utc": "2026-11-26T12:31:06.055701+00:00"
+    },
+    {
+      "step": 4,
+      "origin": "new",
+      "metric": "sft_train/loss",
+      "value": 11.78125,
+      "checkpoint_value": 11.78125,
+      "tempo_trace_id": "626ade6fc021e736fb45f891564e84a8",
+      "observed_at_utc": "2026-11-26T12:31:09.692711+00:00"
+    },
+    {
+      "step": 4,
+      "origin": "new",
+      "metric": "time/step_train",
+      "value": 0.0724714002572,
+      "checkpoint_value": 0.0724714002572,
+      "tempo_trace_id": "98596b939a7234d62d7e4e497cdce6e5",
+      "observed_at_utc": "2026-11-26T12:31:09.693133+00:00"
+    }
+  ]
+}

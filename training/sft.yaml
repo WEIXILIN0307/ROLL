@@ -1,0 +1,46 @@
+checkpoint_config:
+  async_upload: false
+  output_dir: __RUN__/checkpoints
+  type: file_system
+exp_name: insight-tiny-sft
+logging_dir: __RUN__/logs
+max_steps: 3
+num_gpus_per_node: 1
+output_dir: __RUN__/work
+pretrain: __RUN__/model
+resume_from_checkpoint: false
+save_steps: 2
+sequence_length: 64
+sft_train:
+  data_args:
+    file_name:
+    - __RUN__/first.jsonl
+    preprocessing_num_workers: 1
+    template: qwen2_5
+  device_mapping: list(range(1))
+  model_args:
+    attn_implementation: sdpa
+    disable_gradient_checkpointing: true
+    dtype: bf16
+  strategy_args:
+    strategy_config:
+      enable_mix_precision: true
+      fsdp_size: 1
+      offload_policy: false
+      reshard_after_forward: true
+    strategy_name: fsdp2_train
+  system_envs:
+    PYTORCH_CUDA_ALLOC_CONF: expandable_segments:False
+  training_args:
+    gradient_accumulation_steps: 1
+    learning_rate: 0.0001
+    num_train_epochs: 1
+    per_device_train_batch_size: 1
+    warmup_steps: 0
+  use_sequence_packing: false
+track_with: rl_insight
+tracker_kwargs:
+  name: tiny-sft
+  project: roll-followups-parity-sft
+transfer_backend:
+  backend_name: null

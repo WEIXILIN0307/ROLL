@@ -1,0 +1,148 @@
+{
+  "roll_commit": "e8bf333c514755912fe19ef58945f1dedd463ce5",
+  "project": "roll-followups-parity-vlm",
+  "execution": "tiny-vlm-20261126-123236-5ff01b6b",
+  "checkpoint_step": 2,
+  "matched_counts": [
+    {
+      "phase": "first",
+      "execution": "tiny-vlm-20261126-123025-2f39ce09",
+      "step": 0,
+      "metric_count": 221
+    },
+    {
+      "phase": "first",
+      "execution": "tiny-vlm-20261126-123025-2f39ce09",
+      "step": 1,
+      "metric_count": 221
+    },
+    {
+      "phase": "first",
+      "execution": "tiny-vlm-20261126-123025-2f39ce09",
+      "step": 2,
+      "metric_count": 226
+    },
+    {
+      "phase": "resumed",
+      "execution": "tiny-vlm-20261126-123236-5ff01b6b",
+      "step": 0,
+      "metric_count": 221
+    },
+    {
+      "phase": "resumed",
+      "execution": "tiny-vlm-20261126-123236-5ff01b6b",
+      "step": 1,
+      "metric_count": 221
+    },
+    {
+      "phase": "resumed",
+      "execution": "tiny-vlm-20261126-123236-5ff01b6b",
+      "step": 2,
+      "metric_count": 226
+    },
+    {
+      "phase": "resumed",
+      "execution": "tiny-vlm-20261126-123236-5ff01b6b",
+      "step": 3,
+      "metric_count": 221
+    },
+    {
+      "phase": "resumed",
+      "execution": "tiny-vlm-20261126-123236-5ff01b6b",
+      "step": 4,
+      "metric_count": 226
+    }
+  ],
+  "series": [
+    {
+      "step": 0,
+      "origin": "replayed",
+      "metric": "time/step_generate",
+      "value": 10.388586882967502,
+      "checkpoint_value": 10.388586882967502,
+      "tempo_trace_id": "3b9cc91c6f87bd0fa09325e8a74b92ba",
+      "observed_at_utc": "2026-11-26T12:32:40.528762+00:00"
+    },
+    {
+      "step": 0,
+      "origin": "replayed",
+      "metric": "actor/lr",
+      "value": 0.00019999999999999998,
+      "checkpoint_value": 0.00019999999999999998,
+      "tempo_trace_id": "434640b2cc74d84c2f02a1e2ccb77df4",
+      "observed_at_utc": "2026-11-26T12:32:39.214213+00:00"
+    },
+    {
+      "step": 1,
+      "origin": "replayed",
+      "metric": "time/step_generate",
+      "value": 2.6578379799611866,
+      "checkpoint_value": 2.6578379799611866,
+      "tempo_trace_id": "780e265c291ad2cf7b39276d736191ad",
+      "observed_at_utc": "2026-11-26T12:32:40.618111+00:00"
+    },
+    {
+      "step": 1,
+      "origin": "replayed",
+      "metric": "actor/lr",
+      "value": 9.999999999999999e-05,
+      "checkpoint_value": 9.999999999999999e-05,
+      "tempo_trace_id": "4eefc36dc81efafd29da46764cbe81bd",
+      "observed_at_utc": "2026-11-26T12:32:40.547697+00:00"
+    },
+    {
+      "step": 2,
+      "origin": "replayed",
+      "metric": "time/step_generate",
+      "value": 2.6340048070997,
+      "checkpoint_value": 2.6340048070997,
+      "tempo_trace_id": "14e711502a5d4bb6f9b3907aa5c7c075",
+      "observed_at_utc": "2026-11-26T12:32:40.725467+00:00"
+    },
+    {
+      "step": 2,
+      "origin": "replayed",
+      "metric": "actor/lr",
+      "value": 0,
+      "checkpoint_value": 0.0,
+      "tempo_trace_id": "34b96b5e28a615963f1635f9b2303d97",
+      "observed_at_utc": "2026-11-26T12:32:40.625293+00:00"
+    },
+    {
+      "step": 3,
+      "origin": "new",
+      "metric": "time/step_generate",
+      "value": 9.896728239022195,
+      "checkpoint_value": 9.896728239022195,
+      "tempo_trace_id": "d3c93ff71a8f083c33dfab34f5f94df0",
+      "observed_at_utc": "2026-11-26T12:33:58.002286+00:00"
+    },
+    {
+      "step": 3,
+      "origin": "new",
+      "metric": "actor/lr",
+      "value": 5.9999999999999995e-05,
+      "checkpoint_value": 5.9999999999999995e-05,
+      "tempo_trace_id": "c8b60ee247c59805223159930dc9bab3",
+      "observed_at_utc": "2026-11-26T12:33:58.032569+00:00"
+    },
+    {
+      "step": 4,
+      "origin": "new",
+      "metric": "time/step_generate",
+      "value": 3.069598080124706,
+      "checkpoint_value": 3.069598080124706,
+      "tempo_trace_id": "f0fdaa77f5c33cf7874faf2e41372289",
+      "observed_at_utc": "2026-11-26T12:34:08.682041+00:00"
+    },
+    {
+      "step": 4,
+      "origin": "new",
+      "metric": "actor/lr",
+      "value": 0,
+      "checkpoint_value": 0.0,
+      "tempo_trace_id": "b11d367189f3bf3c26bba7e707a6f0df",
+      "observed_at_utc": "2026-11-26T12:34:08.700230+00:00"
+    }
+  ]
+}
